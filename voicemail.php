@@ -100,9 +100,16 @@
             $response->addPlay($_GET['Message']);
             
         // check if we have any message, if so, read it back 
-        elseif(strlen(trim($_GET['Message'])))
-            $response->addSay(stripslashes($_GET['Message']));
-            
+        elseif(strlen(trim($_GET['Message']))) {
+	    $attr = array();
+	    if (array_key_exists('Language', $_GET) && in_array(strtolower($_GET['Language']), array('en', 'en-gb', 'es', 'fr', 'de'))) {
+	        $attr['language'] = strtolower($_GET['Language']);
+	    }
+	    if (array_key_exists('Voice', $_GET) && in_array(strtolower($_GET['Voice']), array('man', 'woman'))) {
+	        $attr['voice'] = strtolower($_GET['Voice']);
+	    }
+            $response->addSay(stripslashes($_GET['Message']), $attr);
+	}    
         // no message, just use a default
         else
             $response->addSay("Please leave a message after the beep.");
